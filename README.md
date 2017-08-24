@@ -9,7 +9,9 @@ This is a script that connects MQTT with python-mirobo
 
 **Requirements:**
 
-Python => 3.6
+* Python => 3.6
+* python-mirobo == 0.1.4
+* paho-mqtt == 1.3.0
 
 
 ## Configuration:
