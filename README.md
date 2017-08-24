@@ -33,7 +33,7 @@ Thanks guys
 Class device:
     Def __init __ (self, ip: str = None, token: str = None,
                  Start_id: int = 0, debug: int = 0) -> None:
-        Self.ip = "IP BATTERIES LOCAL"
+        Self.ip = "IP BULB LOCAL"
         Self.port = 54321
         If token is None:
             Token = 32 * '0'
