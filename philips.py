@@ -5,7 +5,6 @@ print("Skrypt sterowania Philips Xiaomi LED Bulb")
 
 # Inicjacja zarowki z biblioteki mirobo
 led = mirobo.Ceil()
-led.off()
 
 # Set MQTT Topic
 setOnMQTT = "/home/setOn"
@@ -45,22 +44,43 @@ def on_message(client, userdata, message):
 def setPowerOn(on):
     if on == True:
         print("<INFO> Philips Xiaomi LED Bulb ON: True")
-        led.on()
-        client.publish(statusOnMQTT, 1)
+
+        try:
+            led.on()
+        except mirobo.device.DeviceException:
+            print("<ERROR> Nie odnaleziono zarowki")
+            client.publish(statusOnMQTT, 0)
+        else:
+            client.publish(statusOnMQTT, 1)
     else:
         print("<INFO> Philips Xiaomi LED Bulb ON: False")
-        led.off()
-        client.publish(statusOnMQTT, 0)
+        try:
+            led.off()
+        except mirobo.device.DeviceException:
+            print("<ERROR> Nie odnaleziono zarowki")
+            client.publish(statusOnMQTT, 1)
+        else:
+            client.publish(statusOnMQTT, 0)
 
 def setBrightness(value):
     print("<INFO> Philips Xiaomi LED Bulb Brightness: " + str(value))
-    led.set_bright(value)
-    client.publish(statusBrightness, value)
+    try:
+        led.set_bright(value)
+    except mirobo.device.DeviceException:
+        print("<ERROR> Nie odnaleziono zarowki")
+        client.publish(statusOnMQTT, 0)
+    else:
+        client.publish(statusBrightness, value)
 
 def setColorTemperature(value):
     print("<INFO> Philips Xiaomi LED CCT: " + str(value))
-    led.set_cct(calculateColorTemperature(value, 140, 500, 100, 1))
-    client.publish(statusColorTemperature, value)
+    try:
+        led.set_cct(calculateColorTemperature(value, 140, 500, 100, 1))
+    except mirobo.device.DeviceException:
+        print("<ERROR> Nie odnaleziono zarowki")
+        client.publish(statusOnMQTT, 0)
+    else:
+        client.publish(statusColorTemperature, value)
 
 # Metoda obliczania map
 def calculateColorTemperature(x, in_min, in_max, out_min, out_max):
